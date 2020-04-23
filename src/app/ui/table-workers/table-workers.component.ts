@@ -29,11 +29,12 @@ export class TableWorkersComponent implements OnInit {
       worker.disabled = false;
   }
 
-  onSaveWorker(e: any, worker: MyWorker) {
+  onSaveWorker(elm: HTMLInputElement, worker: MyWorker) {
     worker.name = worker.name.replace(/\s+/g, '');
     worker.surname = worker.surname.replace(/\s+/g, '');
     if (worker.name.length > 0 && worker.surname.length > 0) {
-      e.target.disabled = true;
+      elm.disabled = true;
+      console.log(elm);
       worker.disabled = true;
       console.log(worker);
     } else
