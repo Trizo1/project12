@@ -30,9 +30,14 @@ export class TableWorkersComponent implements OnInit {
   }
 
   onSaveWorker(e: any, worker: MyWorker) {
-    e.target.disabled = true;
-    worker.disabled = true;
-    console.log(worker);
+    worker.name = worker.name.replace(/\s+/g, '');
+    worker.surname = worker.surname.replace(/\s+/g, '');
+    if (worker.name.length > 0 && worker.surname.length > 0) {
+      e.target.disabled = true;
+      worker.disabled = true;
+      console.log(worker);
+    } else
+      alert('Проверьте правильность введенных данных');
   }
 
 }

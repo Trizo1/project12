@@ -22,8 +22,8 @@ export class AddformWorkerComponent implements OnInit {
 
   onAddWorker() {
     let worker: MyWorker = {
-      name: this.name,
-      surname: this.surname,
+      name: this.name.replace(/\s+/g, ''),
+      surname: this.surname.replace(/\s+/g, ''),
       type: this.type,
       disabled: true,
     };
