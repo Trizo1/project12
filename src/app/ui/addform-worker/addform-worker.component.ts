@@ -22,12 +22,14 @@ export class AddformWorkerComponent implements OnInit {
 
   onAddWorker() {
     let worker: MyWorker = {
-      name: this.name.replace(/\s+/g, ''),
-      surname: this.surname.replace(/\s+/g, ''),
+      name: this.name,
+      surname: this.surname,
       type: this.type,
       disabled: true,
     };
     if (typeof worker.name !== 'undefined' && typeof worker.surname !== 'undefined') {
+      worker.name = worker.name.replace(/\s+/g, '');
+      worker.surname = worker.surname.replace(/\s+/g, '');
       if (this.checkWorker(worker.name, worker.surname))
         this.addWorker.emit(worker);
     } else
