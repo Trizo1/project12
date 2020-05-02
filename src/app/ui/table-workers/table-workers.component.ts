@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MyWorker, MyWorkerType } from 'src/app/shared/worker.model';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-table-workers',
@@ -9,6 +10,9 @@ import { MyWorker, MyWorkerType } from 'src/app/shared/worker.model';
 export class TableWorkersComponent implements OnInit {
 
   myWorkerType = MyWorkerType;
+  workerForm: FormGroup;
+  mask = ['8', ' ', '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
+
 
   @Input() title: string;
   @Input() workers: MyWorker[] = [];
@@ -17,7 +21,15 @@ export class TableWorkersComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    for (let worker of this.workers) {
+      worker.workerForm = new FormGroup({
+        name: new FormControl({ value: worker.name, disabled: true }, [Validators.required,]),
+        surname: new FormControl({ value: worker.surname, disabled: true }, [Validators.required,]),
+        type: new FormControl({ value: worker.type, disabled: true }, [Validators.required,]),
+        phone: new FormControl({ value: worker.phone, disabled: true }, [Validators.required,]),
+      });
+    }
   }
 
   onDeleteWorker(id: number) {
@@ -25,18 +37,23 @@ export class TableWorkersComponent implements OnInit {
   }
 
   onEditWorker(worker: MyWorker) {
-    if (worker.disabled)
-      worker.disabled = false;
+    worker.workerForm.enable();
   }
 
   onSaveWorker(worker: MyWorker) {
-    worker.name = worker.name.replace(/\s+/g, '');
-    worker.surname = worker.surname.replace(/\s+/g, '');
-    if (worker.name.length > 0 && worker.surname.length > 0) {
-      worker.disabled = true;
-      console.log(worker);
+    if (worker.workerForm.valid) {
+      worker.name = worker.workerForm.controls.name.value.replace(/\s+/g, '');
+      worker.workerForm.controls.name.setValue(worker.name);
+      worker.surname = worker.workerForm.controls.surname.value.replace(/\s+/g, '');
+      worker.workerForm.controls.surname.setValue(worker.surname);
+      worker.type = worker.workerForm.controls.type.value;
+      worker.phone = worker.workerForm.controls.phone.value.replace(/\D/g, '');
+      if (worker.name.length > 0 && worker.surname.length > 0 && worker.phone.length == 11) {
+        console.log(worker);
+        worker.workerForm.disable();
+      } else
+        alert('Проверьте правильность введенных данных');
     } else
       alert('Проверьте правильность введенных данных');
   }
-
 }

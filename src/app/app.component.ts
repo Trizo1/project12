@@ -26,5 +26,6 @@ export class AppComponent {
     let id = this.workers.length > 0 ? this.workers[this.workers.length - 1].id + 1 : 0;
     worker.id = id;
     this.workers.push(worker);
+    console.log(worker);
   }
 }

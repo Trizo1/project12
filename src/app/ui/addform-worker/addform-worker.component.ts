@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { MyWorkerType, MyWorker } from 'src/app/shared/worker.model';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-addform-worker',
@@ -8,36 +9,38 @@ import { MyWorkerType, MyWorker } from 'src/app/shared/worker.model';
 })
 export class AddformWorkerComponent implements OnInit {
 
-  name: string;
-  surname: string;
-  type = 0;
   myWorkerType = MyWorkerType;
+  mask = ['8', ' ', '(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, '-', /\d/, /\d/];
+  workerForm: FormGroup;
 
   @Output() addWorker = new EventEmitter<MyWorker>();
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.workerForm = this.getFormGroup(null, null, null, null);
   }
 
   onAddWorker() {
     let worker: MyWorker = {
-      name: this.name,
-      surname: this.surname,
-      type: this.type,
-      disabled: true,
+      name: this.workerForm.value.name,
+      surname: this.workerForm.value.surname,
+      type: this.workerForm.value.type,
+      phone: this.workerForm.value.phone
     };
-    if (typeof worker.name !== 'undefined' && typeof worker.surname !== 'undefined') {
-      worker.name = worker.name.replace(/\s+/g, '');
-      worker.surname = worker.surname.replace(/\s+/g, '');
-      if (this.checkWorker(worker.name, worker.surname))
-        this.addWorker.emit(worker);
-    } else
-      alert('Проверьте правильность введенных данных');
+    worker.name = worker.name.replace(/\s+/g, '');
+    worker.surname = worker.surname.replace(/\s+/g, '');
+    worker.phone = worker.phone.replace(/\D/g, '');
+    if (this.checkWorker(worker.name, worker.surname, worker.phone)) {
+      worker.workerForm = this.getFormGroup(worker.name, worker.surname, worker.type, worker.phone);
+      worker.workerForm.disable();
+      this.addWorker.emit(worker);
+      this.workerForm.reset();
+    }
   }
 
-  checkWorker(name: string, surname: string) {
-    if (name.length > 0 && surname.length > 0) {
+  checkWorker(name: string, surname: string, phone: string) {
+    if (name.length > 0 && surname.length > 0 && phone.length == 11) {
       return true;
     }
     else {
@@ -46,4 +49,12 @@ export class AddformWorkerComponent implements OnInit {
     }
   }
 
+  getFormGroup(name: string, surname: string, type: MyWorkerType, phone: string) {
+    return new FormGroup({
+      name: new FormControl(name, [Validators.required,]),
+      surname: new FormControl(surname, [Validators.required,]),
+      type: new FormControl(type, [Validators.required,]),
+      phone: new FormControl(phone, [Validators.required,]),
+    });
+  }
 }
