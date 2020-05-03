@@ -33,7 +33,7 @@
                     <button class="btn btn-outline-primary btn-sm"
                         (click)="onEditWorker(this.worker)">Редактировать</button>
                     <button class="btn btn-outline-success btn-sm mt-2" (click)="onSaveWorker(this.worker)"
-                        [disabled]="worker.workerForm.disabled">Сохранить</button>
+                        [disabled]="worker.workerForm.disabled || worker.workerForm.invalid">Сохранить</button>
                     <button (click)="onDeleteWorker(worker.id)"
                         class="btn btn-outline-danger btn-sm mt-2">Удалить</button>
                 </div>

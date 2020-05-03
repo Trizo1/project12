@@ -28,15 +28,14 @@ export class AddformWorkerComponent implements OnInit {
       type: this.workerForm.value.type,
       phone: this.workerForm.value.phone
     };
-    worker.name = worker.name.replace(/\s+/g, '');
-    worker.surname = worker.surname.replace(/\s+/g, '');
     worker.phone = worker.phone.replace(/\D/g, '');
-    if (this.checkWorker(worker.name, worker.surname, worker.phone)) {
+    if (worker.phone.length == 11) {
       worker.workerForm = this.getFormGroup(worker.name, worker.surname, worker.type, worker.phone);
       worker.workerForm.disable();
       this.addWorker.emit(worker);
       this.workerForm.reset();
-    }
+    } else
+      alert('Проверьте правильность введенных данных');
   }
 
   checkWorker(name: string, surname: string, phone: string) {
@@ -51,8 +50,8 @@ export class AddformWorkerComponent implements OnInit {
 
   getFormGroup(name: string, surname: string, type: MyWorkerType, phone: string) {
     return new FormGroup({
-      name: new FormControl(name, [Validators.required,]),
-      surname: new FormControl(surname, [Validators.required,]),
+      name: new FormControl(name, [Validators.required, Validators.pattern('[а-яА-ЯёЁa-zA-Z]+')]),
+      surname: new FormControl(surname, [Validators.required, Validators.pattern('[а-яА-ЯёЁa-zA-Z]+')]),
       type: new FormControl(type, [Validators.required,]),
       phone: new FormControl(phone, [Validators.required,]),
     });

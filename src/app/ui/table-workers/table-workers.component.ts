@@ -24,8 +24,8 @@ export class TableWorkersComponent implements OnInit {
   ngOnInit() {
     for (let worker of this.workers) {
       worker.workerForm = new FormGroup({
-        name: new FormControl({ value: worker.name, disabled: true }, [Validators.required,]),
-        surname: new FormControl({ value: worker.surname, disabled: true }, [Validators.required,]),
+        name: new FormControl({ value: worker.name, disabled: true }, [Validators.required, Validators.pattern('[а-яА-ЯёЁa-zA-Z]+')]),
+        surname: new FormControl({ value: worker.surname, disabled: true }, [Validators.required, Validators.pattern('[а-яА-ЯёЁa-zA-Z]+')]),
         type: new FormControl({ value: worker.type, disabled: true }, [Validators.required,]),
         phone: new FormControl({ value: worker.phone, disabled: true }, [Validators.required,]),
       });
@@ -42,13 +42,11 @@ export class TableWorkersComponent implements OnInit {
 
   onSaveWorker(worker: MyWorker) {
     if (worker.workerForm.valid) {
-      worker.name = worker.workerForm.controls.name.value.replace(/\s+/g, '');
-      worker.workerForm.controls.name.setValue(worker.name);
-      worker.surname = worker.workerForm.controls.surname.value.replace(/\s+/g, '');
-      worker.workerForm.controls.surname.setValue(worker.surname);
+      worker.name = worker.workerForm.controls.name.value;
+      worker.surname = worker.workerForm.controls.surname.value;
       worker.type = worker.workerForm.controls.type.value;
       worker.phone = worker.workerForm.controls.phone.value.replace(/\D/g, '');
-      if (worker.name.length > 0 && worker.surname.length > 0 && worker.phone.length == 11) {
+      if (worker.phone.length == 11) {
         console.log(worker);
         worker.workerForm.disable();
       } else
